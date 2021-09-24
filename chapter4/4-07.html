@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+        <title>Chover 활용</title>
+
+        <style>
+                
+    html, body { margin: 0; padding: 0; height: 100%; }
+    .section { width: 50%; height: 100%; float: left; 
+     }
+    .aside { width: 50%; height: 100%; float: left; 
+     }
+        </style>
+
+        <script>
+            function reversing_on(){
+                document.getElementById("card").src = "./rear.JPG"
+            }
+            function reversing_off(){
+                document.getElementById("card").src = "./front.JPG"
+            }
+        </script>
+</head>
+<body>
+    <h3>Chover 활용</h3>
+    <hr>
+
+    <p = class="section" >
+       <br>
+       마우스를 올리면 카드의 앞면이 보인다.
+    </p>
+    <div class="aside" >
+    <img id="card" src="./front.JPG" onmouseover="reversing_on()"
+    onmouseout="reversing_off()">
+    </div>
+    
+</body>
+</html>

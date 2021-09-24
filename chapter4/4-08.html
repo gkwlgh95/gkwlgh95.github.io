@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <title>이미지 테두리 만들기</title>
+    <style>
+        #dog {
+            height : 150px ;
+            width  : 150px;
+           
+            border : 15px solid transparent ;
+            padding : 5px ;
+           
+            
+            border-image: URL(./border-image-2.png) 33  round;  /* URL(주소) (슬라이스) / (줄이고 싶은 크기) */
+             }
+
+
+
+    </style>
+
+
+</head>
+<body>
+    <h3>이미지 테두리 만들기</h3>
+    <hr>
+    
+        <img id="dog" src="./smiledog.JPG" >
+    
+    
+</body>
+</html>
