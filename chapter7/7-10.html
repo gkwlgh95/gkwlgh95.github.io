@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h3>book 객체 배열 만들기</h3>
+    <hr>
+
+
+    <script>
+    let data=[];
+    let str=[];
+    for (let index = 0; index < 5; index++) {
+        data[index]=prompt("콤마(,)로 분리하면서 책 제목 저자 가격 순으로 입력")
+        str[index]=data[index].split(',');
+    } 
+
+    for (let index = 0; index < 5; index++) {
+        document.write(data[index]+"<br>");
+        
+    }
+
+    let max=Math.max(str[0][2],str[1][2],str[2][2],str[3][2],str[4][2])
+    let i;
+    for (let index = 0; index < 5; index++) {
+        if(str[index][2]==max){
+            i= index;
+            break;
+        }
+        
+    }
+
+
+
+    document.write("<hr>가장비싼책은"+str[i][0]+"입니다.");
+
+
+    </script>
+    
+</body>
+</html>

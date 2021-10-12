@@ -1,0 +1,50 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>17개의 CSS2 색이름과 색</title>
+<style>
+div {
+	display : inline-block;
+	width : 60px;
+	padding : 10px;
+}
+</style>
+</head>
+<body>
+<h3>17개의 CSS2 색이름과 색</h3>
+<hr>
+<script>
+
+    function rand(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+
+      
+    }
+    function rgb(){
+        let rgbstr="rgb(";
+        rgbstr +=rand(1,256)+","+rand(1,256)+","+rand(1,256)+")";
+        return  rgbstr;
+    }
+    let colorNames = [ "maroon", "red", "orange", "yellow", "olive",
+              		"purple", "fuchsia", "white", "lime", "green",
+              		"navy", "blue", "aqua", "teal", "black", "silver", "gray"];
+
+    let colorNames1 = []
+
+
+    for (let index = 0; index < 16; index++) {
+        colorNames1[index]=rgb();
+        
+    }
+   
+    for(i=0; i<16; i++) {
+	    let str = "<div style='height: 50px; width: 110px; background-color:";
+	    str += colorNames1[i];
+	    str += "'>" + colorNames1[i] + "</div>";
+	    document.write(str);
+    }
+</script>
+</body>
+</html>
