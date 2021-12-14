@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>우리동네 확진자</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/c3/0.4.11/c3.min.css"/>
+
+    <script src="https://d3js.org/d3.v3.min.js"></script>     
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/c3/0.4.11/c3.min.js"></script>
+    <style>
+
+        th, td {
+          border: 1px solid black;
+        }
+    </style>
+
+    <!-- jquery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script> 
+    
+    <!-- naver map -->
+    <script type="text/javascript" src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=3j74nj8hha"></script>
+    
+    <!--지진발생 대피소-->
+
+
+    
+</head>
+<body>
+    <h3>우리동네 확진자</h3>
+    <hr>
+    <div id="map" style="width:500px;height:400px;"></div>
+
+
+    
+    <!--표 작성-->
+    <table id="list"></table>
+
+    
+
+    <style>
+        table,th,td {
+          border : 1px solid black;
+          border-collapse: collapse;
+        }
+        th,td {
+          padding: 5px;
+        }
+        th, td {
+  text-align: center;
+}
+
+        </style>
+
+
+
+    <script>
+        function loadDoc(locationnumber,startdate, lastdate) {
+            startdate = startdate.replace("-","");
+            startdate = startdate.replace("-","");
+            lastdate = lastdate.replace("-","");
+            lastdate = lastdate.replace("-","");
+          document.getElementById('location').innerText = locationnumber;
+
+
+
+var url = 'http://openapi.data.go.kr/openapi/service/rest/Covid19/getCovid19SidoInfStateJson'; /*URL*/
+
+var queryParams = '?' + encodeURIComponent('serviceKey') + '='+'xdsJjk0%2FgxijrqmY1DqXfmf3UZ%2Fum3TRvropo81dSvBAyqWLhzF01ARJK0C6BExA3QXkoJj2iIHDk2L%2BkAFqQg%3D%3D'; /*Service Key*/
+queryParams += '&' + encodeURIComponent('pageNo') + '=' + encodeURIComponent('1'); /**/
+queryParams += '&' + encodeURIComponent('numOfRows') + '=' + encodeURIComponent('10'); /**/
+queryParams += '&' + encodeURIComponent('startCreateDt') + '=' + encodeURIComponent(startdate); /**/
+queryParams += '&' + encodeURIComponent('endCreateDt') + '=' + encodeURIComponent(lastdate); /**/
+
+          const xhttp = new XMLHttpRequest();
+          xhttp.onload = function() {myFunction(this, locationnumber);}
+          xhttp.open("GET",  url + queryParams);
+          xhttp.send();
+        }
+
+        function myFunction(xml, locationnumber) {
+  const xmlDoc = xml.responseXML;
+  const x = xmlDoc.getElementsByTagName("item");
+
+  let incDecdata=new Array(); 
+  
+  let date=new Array();
+  let j=0;
+  let sum=0;
+  
+  let table="<th>해당기간 총 확진자수</th>";
+  for (let i = 0; i <x.length;  i++) {
+    
+
+    if(x[i].getElementsByTagName("gubun")[0].childNodes[0].nodeValue==locationnumber)
+      {
+
+
+    let t = 1*x[i].getElementsByTagName("incDec")[0].childNodes[0].nodeValue
+    sum += t;
+     }
+
+
+
+      if(x[i].getElementsByTagName("gubun")[0].childNodes[0].nodeValue==locationnumber)
+      {
+   
+
+    incDecdata[j] = x[i].getElementsByTagName("incDec")[0].childNodes[0].nodeValue;
+    date[j] = x[i].getElementsByTagName("stdDay")[0].childNodes[0].nodeValue;
+    j++;
+     }
+   
+  }
+  
+  var a={
+    bindto: "#linechart",
+
+    data: {
+        
+        columns: [
+       
+      ]
+    },
+    axis: {
+        x: {
+            type: 'category',
+            categories:[]
+        }},
+
+        options: {
+			responsive: false,
+			scales: {
+				yAxes: [{
+					ticks: {
+						beginAtZero: true
+					}
+				}]
+			},
+		}
+  };
+  xname=locationnumber+'일일확진자수';
+  incDecdata.unshift("'"+xname+"'");
+  a.axis.x.categories=date;
+  a.data.columns=[ incDecdata];
+  
+  var chart = c3.generate(a);
+
+  table += "<tr><td>" +
+    sum+'명'
+    "</td></tr>";
+  document.getElementById("demo").innerHTML = table;
+}    
+    </script>
+        <form>
+            <label>우리동네이름은?</label>
+            <select id="input_loc">
+              <option>서울</option>
+              <option>부산</option>
+              <option>대구</option>
+              <option>인천</option>
+              <option>광주</option>
+              <option>대전</option>
+              <option>울산</option>
+              <option>세종</option>
+              <option>경기</option>
+              <option>강원</option>
+              <option>충북</option>
+              <option>충남</option>
+              <option>전북</option>
+              <option>전남</option>
+              <option>경북</option>
+              <option>경남</option>
+              <option>제주</option>
+            </select>
+        </form>
+      <form>
+        <p><input id="startdate" type="date" value="2021-12-01" min="2020-04-10" max="2021-12-13">부터</p>
+      </form>
+      <form>
+        <p><input id="lastdate" type="date" value="2021-12-13" min="2020-04-10" max="2021-12-13">까지</p>
+      </form>
+      <p><span id="location">OO</span> 지역의 확진자수입니다.</p>
+      <table id="demo"></table>
+<button type="button" onclick="loadDoc(document.getElementById('input_loc').options[document.getElementById('input_loc').selectedIndex].value,document.getElementById('startdate').value,document.getElementById('lastdate').value);">입력</button>
+<br><br>
+<div id="linechart" style="width:800px;height:300px;"></div>
+
+
+
+    <!--전국 지도 띄우기-->
+    <script>
+        var HOME_PATH = 'https://navermaps.github.io/maps.js/docs',
+            urlPrefix = HOME_PATH + '/data/region',
+            urlSuffix = '.json',
+            regionGeoJson = [],
+            loadCount = 0;
+
+        var map = new naver.maps.Map(document.getElementById('map'), {
+            zoom: 7,
+            mapTypeId: 'normal',
+            center: new naver.maps.LatLng(36.4203004, 128.317960)
+        });
+
+        naver.maps.Event.once(map, 'init_stylemap', function () {
+            for (var i = 1; i < 18; i++) {
+            var keyword = i + '';
+
+            if (keyword.length === 1) {
+                keyword = '0' + keyword;
+            }
+
+            $.ajax({
+                url: urlPrefix + keyword + urlSuffix,
+                success: function (idx) {
+                return function (geojson) {
+                    regionGeoJson[idx] = geojson;
+
+                    loadCount++;
+
+                    if (loadCount === 17) {
+                    startDataLayer();
+                    }
+                }
+                }(i - 1)
+            });
+            }
+        });
+
+        var tooltip = $(
+            '<div style="position:absolute;z-index:1000;padding:5px 10px;background-color:#fff;border:solid 2px #000;font-size:14px;pointer-events:none;display:none;"></div>'
+        );
+
+        tooltip.appendTo(map.getPanes().floatPane);
+
+        function startDataLayer() {
+            map.data.setStyle(function (feature) {
+            var styleOptions = {
+                fillColor: '#ff0000',
+                fillOpacity: 0.0001,
+                strokeColor: '#ff0000',
+                strokeWeight: 2,
+                strokeOpacity: 0.4
+            };
+
+            if (feature.getProperty('focus')) {
+                styleOptions.fillOpacity = 0.6;
+                styleOptions.fillColor = '#0f0';
+                styleOptions.strokeColor = '#0f0';
+                styleOptions.strokeWeight = 4;
+                styleOptions.strokeOpacity = 1;
+            }
+
+            return styleOptions;
+            });
+
+            regionGeoJson.forEach(function (geojson) {
+            map.data.addGeoJson(geojson);
+            });
+
+            map.data.addListener('click', function (e) {
+            var feature = e.feature;
+
+            if (feature.getProperty('focus') !== true) {
+                for (i = 0; i < map.data._features.length; i++) {
+                map.data._features[i].setProperty('focus', false);
+                }
+                map.data.revertStyle();
+                let locationname;
+                
+                switch (feature.getProperty('area1')){
+    case  "서울특별시" : 
+    locationname = "서울";
+      break; 
+    case  "부산광역시" :
+    locationname = "부산";
+      break;
+    case "대구광역시":
+    locationname = "대구"; 
+      break;
+    case '인천광역시':
+    locationname = "인천"; 
+      break; 
+      case "광주광역시":
+    locationname = "광주"; 
+      break; 
+      case "대전광역시":
+    locationname = "대전"; 
+      break; 
+      case "울산광역시":
+    locationname = "울산"; 
+      break; 
+      case "세종특별자치시":
+    locationname = "세종"
+      break; 
+      case "경기도":
+    locationname = "경기"; 
+      break; 
+      case "강원도":
+    locationname = "강원"; 
+      break; 
+      case "충청북도":
+    locationname = "충북"; 
+      break; 
+      case "충청남도":
+    locationname = "충남"; 
+      break; 
+      case "전라북도":
+    locationname = "전북"; 
+      break; 
+  
+       case "전라남도":
+    locationname = "전남"; 
+      break; 
+      case "경상북도":
+    locationname = "경북"; 
+      break; 
+      case "경상남도":
+    locationname = "경남"; 
+      break; 
+      case "제주특별자치도":
+    locationname = "제주"; 
+      break; 
+  }
+  
+               // earthquake_load(feature.getProperty('area1'));
+               loadDoc(locationname,
+               document.getElementById('startdate').value,document.getElementById('lastdate').value);
+                feature.setProperty('focus', true);
+            } else {
+                feature.setProperty('focus', false);
+            }
+            });
+
+            map.data.addListener('mouseover', function (e) {
+            var feature = e.feature,
+                regionName = feature.getProperty('area1');
+
+            tooltip.css({
+                display: '',
+                left: e.offset.x,
+                top: e.offset.y
+            }).text(regionName);
+
+            map.data.overrideStyle(feature, {
+                fillOpacity: 0.6,
+                strokeWeight: 4,
+                strokeOpacity: 1
+            });
+            });
+
+            map.data.addListener('mouseout', function (e) {
+            tooltip.hide().empty();
+            map.data.revertStyle();
+            });
+        }
+    </script>
+
+
+
+
+
+
+</body>
+</html>
